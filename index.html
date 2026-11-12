@@ -1,0 +1,274 @@
+Al-Shaimaa Mokhtar:
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لعبة الكنوز العربية - Arabic Treasures</title>
+<style>
+body {
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+background: radial-gradient(circle at center, #1b2735 0%, #090a0f 100%);
+color: #ffffff;
+margin: 0;
+padding: 0;
+display: flex;
+flex-direction: column;
+align-items: center;
+min-height: 100vh;
+user-select: none;
+}
+header {
+width: 100%;
+background: rgba(255, 255, 255, 0.1);
+padding: 15px 0;
+text-align: center;
+box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+display: flex;
+justify-content: space-around;
+align-items: center;
+}
+.score-board {
+font-size: 1.3rem;
+background: #ff9800;
+color: #000;
+padding: 8px 20px;
+border-radius: 25px;
+font-weight: bold;
+}
+#game-container {
+width: 90%;
+max-width: 800px;
+background: rgba(30, 41, 59, 0.9);
+border: 3px solid #38bdf8;
+border-radius: 20px;
+margin-top: 30px;
+padding: 25px;
+text-align: center;
+box-shadow: 0 0 30px rgba(56, 189, 248, 0.3);
+}
+.alien-box {
+display: flex;
+align-items: center;
+justify-content: center;
+background: rgba(15, 23, 42, 0.8);
+padding: 15px;
+border-radius: 15px;
+margin-bottom: 25px;
+border: 1px dashed #38bdf8;
+}
+.alien-avatar {
+font-size: 4rem;
+margin-left: 15px;
+animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+0%, 100% { transform: translateY(0); }
+50% { transform: translateY(-10px); }
+}
+.alien-speech {
+font-size: 1.2rem;
+text-align: right;
+line-height: 1.6;
+}
+.stage { display: none; }
+.stage.active { display: block; animation: fadeIn 0.5s; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* المرحلة 1: الجواهر */
+.gems-grid {
+display: flex;
+justify-content: center;
+gap: 20px;
+flex-wrap: wrap;
+margin: 30px 0;
+}
+.gem {
+font-size: 3.5rem;
+cursor: pointer;
+transition: transform 0.2s;
+background: rgba(255,255,255,0.05);
+padding: 15px;
+border-radius: 50%;
+}
+.gem:hover { transform: scale(1.2); }
+
+/* المرحلة 2: معمل الألوان */
+.beakers-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+gap: 15px;
+margin: 25px 0;
+}
+.beaker {
+padding: 20px;
+border-radius: 15px;
+cursor: pointer;
+font-weight: bold;
+font-size: 1.1rem;
+transition: transform 0.2s;
+border: 2px solid #fff;
+}
+.beaker:hover { transform: translateY(-5px); }
+.green-beaker { background: #16a34a; color: white; }
+.red-beaker { background: #dc2626; color: white; }
+.blue-beaker { background: #2563eb; color: white; }
+.grey-beaker { background: #4b5563; color: white; }
+
+/* المرحلة 3: النفق */
+.tunnel-box {
+background: #0f172a;
+padding: 30px;
+border-radius: 15px;
+
+Al-Shaimaa Mokhtar:
+border: 2px solid #a855f7;
+}
+.quran-word {
+font-size: 3.5rem;
+margin: 20px 0;
+font-weight: bold;
+}
+.options-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 15px;
+margin-top: 20px;
+}
+button.btn {
+background: #38bdf8;
+color: #0f172a;
+border: none;
+padding: 12px 25px;
+font-size: 1.2rem;
+font-weight: bold;
+border-radius: 10px;
+cursor: pointer;
+transition: 0.2s;
+}
+button.btn:hover { background: #0284c7; color: white; }
+.rule-btn {
+background: #1e293b;
+color: #fff;
+border: 2px solid #38bdf8;
+padding: 15px;
+font-size: 1.1rem;
+border-radius: 10px;
+cursor: pointer;
+direction: ltr;
+}
+.rule-btn:hover { background: #38bdf8; color: #000; }
+</style>
+</head>
+<body>
+
+<header>
+<h1>🚀 الكنوز العربية | Arabic Treasures</h1>
+<div class="score-board">الجواهر: <span id="gems-count">0</span> 💎</div>
+</header>
+
+<div id="game-container">
+<!-- الكائن الفضائي المرشد -->
+<div class="alien-box">
+<div class="alien-avatar">👽</div>
+<div class="alien-speech" id="alien-text">
+أهلاً بك يا بطل! أنا صديقك الفضائي <b>نور (Noor)</b>. ساعدني في جمع 5 جواهر متناثرة لنتمكن من تشغيل مركبتنا والدخول إلى معمل الألوان!
+</div>
+</div>
+
+<!-- المرحلة الأولى: جمع الجواهر -->
+<div id="stage-1" class="stage active">
+<h2>المرحلة 1: كوكب الجواهر والكنوز 🪐</h2>
+<p>اضغط على الجواهر لجمعها وإصلاح محرك المركبة:</p>
+<div class="gems-grid" id="gems-area">
+<div class="gem" onclick="collectGem(this)">💎</div>
+<div class="gem" onclick="collectGem(this)">💠</div>
+<div class="gem" onclick="collectGem(this)">🔮</div>
+<div class="gem" onclick="collectGem(this)">💎</div>
+<div class="gem" onclick="collectGem(this)">💠</div>
+</div>
+<button class="btn" id="next-to-lab" style="display:none;" onclick="goToStage(2)">انتقل إلى معمل الألوان 🧪</button>
+</div>
+
+<!-- المرحلة الثانية: معمل الألوان -->
+<div id="stage-2" class="stage">
+<h2>المرحلة 2: معمل الألوان 🧪</h2>
+<p>اضغط على كل أنبوب اختبار ليكشف لك "نور" سر اللون وحكم التجويد بالإنجليزية:</p>
+<div class="beakers-grid">
+<div class="beaker green-beaker" onclick="learnColor('green')">اللون الأخضر<br>(Green)</div>
+<div class="beaker red-beaker" onclick="learnColor('red')">اللون الأحمر<br>(Red)</div>
+<div class="beaker blue-beaker" onclick="learnColor('blue')">اللون الأزرق<br>(Blue)</div>
+<div class="beaker grey-beaker" onclick="learnColor('grey')">اللون الرمادي<br>(Grey)</div>
+</div>
+<button class="btn" id="next-to-tunnel" style="display:none;" onclick="goToStage(3)">ادخل إلى النفق السري 🚇</button>
+</div>
+
+<!-- المرحلة الثالثة: النفق وتعلم الأحكام -->
+<div id="stage-3" class="stage">
+<h2>المرحلة 3: نفق أحكام التجويد 🚇</h2>
+<div class="tunnel-box">
+<p>انظر إلى لون الحرف في الكلمة، واختر الحكم الصحيح بالإنجليزية لفتح البوابة:</p>
+<div class="quran-word" id="word-display">مِنْ <span style="color:#4ade80;">قَ</span>بْلُ</div>
+<div class="options-grid" id="options-area"></div>
+</div>
+</div>
+
+<!-- شاشة النهاية -->
+<div id="stage-win" class="stage">
+<h2>🎉 مبروك يا فارس التجويد! 🎉</h2>
+<p style="font-size: 1.3rem;">لقد اجتزت النفق بنجاح وجمعت كل الكنوز العربية!</p>
+<button class="btn" onclick="location.reload()">العب مرة أخرى 🔄</button>
+</div>
+</div>
+
+<script>
+let gems = 0;
+let learnedColors = new Set();
+let currentQuestion = 0;
+
+Al-Shaimaa Mokhtar:
+// بيانات المرحلة الأولى
+function collectGem(element) {
+if (element.style.visibility !== 'hidden') {
+element.style.visibility = 'hidden';
+gems++;
+document.getElementById('gems-count').innerText = gems;
+
+if (gems === 5) {
+document.getElementById('alien-text').innerHTML = "رائع! لقد جمعنا كل الجواهر. هيا بنا ندخل إلى <b>معمل الألوان</b> لنتعلم أسرار التجويد!";
+document.getElementById('next-to-lab').style.display = 'inline-block';
+}
+}
+}
+
+// الانتقال بين المراحل
+function goToStage(stageNum) {
+document.querySelectorAll('.stage').forEach(s => s.classList.remove('active'));
+if (stageNum === 2) {
+document.getElementById('stage-2').classList.add('active');
+document.getElementById('alien-text').innerHTML = "مرحباً بك في <b>معمل الألوان</b>! اضغط على الألوان الأربعة لتتعرف على معناها في التجويد.";
+} else if (stageNum === 3) {
+document.getElementById('stage-3').classList.add('active');
+loadQuestion();
+}
+}
+
+// بيانات المرحلة الثانية (معمل الألوان)
+function learnColor(color) {
+learnedColors.add(color);
+const speech = document.getElementById('alien-text');
+
+if (color === 'green') {
+speech.innerHTML = "🟢 <b>Green (الأخضر):</b> يرمز للغنة والإخفاء <b>(Ikhfa / Nasalization)</b>، أي إخراج صوت جميل من الأنف.";
+} else if (color === 'red') {
+speech.innerHTML = "🔴 <b>Red (الأحمر):</b> يرمز للمد الطويل <b>(Madd / Elongation)</b>، أي إطالة الصوت بالحرف.";
+} else if (color === 'blue') {
+speech.innerHTML = "🔵 <b>Blue (الأزرق):</b> يرمز للقلقلة <b>(Qalqalah / Bouncing Sound)</b>، أي اهتزاز الصوت عند نطق الحرف الساكن.";
+} else if (color === 'grey') {
+speech.innerHTML = "⚪ <b>Grey (الرمادي):</b> يرمز للحروف الصامتة أو الإدغام بدون غنة <b>(Silent Letter / Idgham)</b>.";
+}
+
+if (learnedColors.size === 4) {
+document.getElementById('next-to-tunnel').style.display = 'inline-block';
+}
+}
